@@ -1,5 +1,6 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
+import Icon from "./icon.tsx";
 
 const MemoListItem = ():JSX.Element => {
 
@@ -9,9 +10,9 @@ const MemoListItem = ():JSX.Element => {
         <Text style={ styles.memoListItemTitle }>買い物リスト</Text>
         <Text style={ styles.memoListItemDate }>2024年10月01日 14:49</Text>
       </View>
-      <View>
-        <AntDesign name="close" size={ 16.94 } color="#B0B0B0" />
-      </View>
+      <TouchableOpacity>
+        <Icon name="delete" size={ 32 } color="#B0B0B0" />
+      </TouchableOpacity>
     </View>
   )
 };
