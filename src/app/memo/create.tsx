@@ -1,13 +1,16 @@
 import { View, StyleSheet, TextInput, KeyboardAvoidingView } from "react-native";
-import Header from "../../components/header.tsx";
 import CircleBtn from "../../components/circleBtn";
 import Icon from "../../components/icon.tsx";
+import { router } from "expo-router";
+
+const handlePress = ():void => {
+  router.back();
+};
 
 const Create = ():JSX.Element => {
 
   return (
     <KeyboardAvoidingView behavior="height" style={ styles.container }>
-      <Header />
       <View style={ styles.inputContainer }>
         <TextInput 
           style={ styles.input }
@@ -15,7 +18,7 @@ const Create = ():JSX.Element => {
           textAlignVertical="top"
         />
       </View>
-      <CircleBtn>
+      <CircleBtn onPress={ handlePress }>
         <Icon  name="check" size={ 40 } color="#fff" />
       </CircleBtn>
     </KeyboardAvoidingView>
