@@ -2,20 +2,42 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-nativ
 import Button from "../../components/button.tsx";
 
 import { Link, router } from "expo-router";
+import { useState } from "react";
 
 const handlePress = ():void => {
   // signup
-  router.push("/memo/list");
+  router.replace("/memo/list");
 };
 
 const SignUp = ():JSX.Element => {
+
+  const [ email, setEmail ] = useState("");
+  const [ pass, setPass ] = useState("");
 
   return (
     <View style={ styles.container }>
       <View style={ styles.inner }>
         <Text style={ styles.title }>Sign Up</Text>
-        <TextInput placeholder="Email Address" style={ styles.input } />
-        <TextInput placeholder="Password" style={ styles.input } />
+        <TextInput 
+          placeholder="Email Address" 
+          style={ styles.input }
+          value={ email }
+          onChangeText={ e => setEmail(e) }
+          autoCapitalize="none"
+          keyboardAppearance="dark"
+          keyboardType="email-address"
+          textContentType="emailAddress"
+        />
+        <TextInput 
+          placeholder="Password" 
+          style={ styles.input } 
+          value={ pass }
+          onChangeText={ e => setPass(e) }
+          autoCapitalize="none"
+          keyboardAppearance="dark"
+          secureTextEntry
+          textContentType="password"
+        />
         <Button label="Submit" onPress={ handlePress }/>
         <View style={ styles.footer }>
           <Text style={ styles.footerText }>Already Registered?</Text>
