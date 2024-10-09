@@ -1,16 +1,21 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import MemoListItem from "../../components/memoListItem.tsx";
 import CircleBtn from "../../components/circleBtn.tsx";
 import Icon from "../../components/icon.tsx";
 import { router, useNavigation } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import LogOutbtn from "../../components/logoutBtn.tsx";
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import { db, auth } from "../config.ts";
+import { type Memo } from "../../../types/memo.ts";
 
 const handlePress = ():void => {
   router.push("/memo/create");
 };
 
-const Index = ():JSX.Element => {
+const List = ():JSX.Element => {
+
+  const [ memos, setMemos ] = useState<Memo[]>([]);
 
   const navigation = useNavigation();
 
@@ -20,15 +25,38 @@ const Index = ():JSX.Element => {
     });
   }, []);
 
+  useEffect(() => {
+    if(auth.currentUser === null) 
+      return
+    const ref = collection(db, `users/${auth.currentUser.uid}/memos`);
+    const q = query(ref, orderBy("updatedAt", "desc"));
+    const unsubscribe = onSnapshot(q, snapshot => {
+
+      const remoteMemos: Memo[] = [];
+
+      snapshot.forEach(doc => {
+
+        const { bodyText, updatedAt } = doc.data();
+
+        remoteMemos.push({
+          id: doc.id,
+          bodyText,
+          updatedAt
+        });
+      });
+      
+      setMemos(remoteMemos);
+    });
+    return unsubscribe;
+  }, []);
+
   return (
     <View style={ styles.container }>
 
-      <View>
-        <MemoListItem />
-        <MemoListItem />
-        <MemoListItem />
-      </View>
-
+      <FlatList 
+        data={ memos }
+        renderItem={({ item }) => <MemoListItem memo={ item } />}
+      />
       <CircleBtn onPress={ handlePress }>
         <Icon name="plus" size={ 40 } color={ "fff" }/>
       </CircleBtn>
@@ -43,4 +71,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Index;
+export default List;

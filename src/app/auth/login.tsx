@@ -1,12 +1,23 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from "react-native";
 import Button from "../../components/button.tsx";
 
 import { Link, router } from "expo-router";
 import { useState } from "react";
 
-const handlePress = ():void => {
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../config.ts";
+
+const handlePress = (email:string, password:string):void => {
   // login
-  router.replace("/memo/list");
+  signInWithEmailAndPassword(auth, email, password)
+  .then(userCredential => {
+    router.replace("/memo/list");
+  })
+  .catch(err => {
+    const { code, message } = err;
+    Alert.alert(message);
+  });
+  
 };
 
 const LogIn = ():JSX.Element => {
@@ -38,10 +49,10 @@ const LogIn = ():JSX.Element => {
           secureTextEntry
           textContentType="password"
         />
-        <Button label="Submit" onPress={ handlePress }/>
+        <Button label="Submit" onPress={ () => { handlePress(email, pass) }}/>
         <View style={ styles.footer }>
           <Text style={ styles.footerText }>Not Registered?</Text>
-          <Link href="/auth/signup" asChild={ true }>
+          <Link href="/auth/signup" asChild={ true } replace>
             <TouchableOpacity>
               <Text style={ styles.footerLink }>Sign up here!</Text>
             </TouchableOpacity>
